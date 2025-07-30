@@ -1,8 +1,12 @@
+import styles from "./app.module.css"
+import { Header } from "./components/Header"
+
 export function App() {
     return(
-    <div>
-        return <h1>Heloo World</h1>
-        <button>Teste</button>
+    <div className={styles.container}>
+        <main>
+        <Header />
+        </main>
     </div>
     )
 }
