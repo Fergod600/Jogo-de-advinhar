@@ -1,13 +1,18 @@
 import styles from "./styles.module.css"
 
-type Props ={
+type Props = {
     value?: string
+    size?: "default" | "small"
 }
 
 
-export function Letter({value = ""}:Props ){
-    return(
-        <div className={styles.letter}>
+export function Letter({ value = "", size = "default" }: Props) {
+    return (
+        <div
+            className={`
+        ${styles.letter}
+        ${size === "small" && styles.letterSmall}
+        `}>
             <span>{value}</span>
         </div>
     )
