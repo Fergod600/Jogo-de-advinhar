@@ -14,7 +14,7 @@ import { LettersUsed, LettersUsedProps } from "./components/LettersUsed"
 export function App() {
 
     const [score, setScore] = useState(0)
-    const [attempts, setAttempts] = useState(0)
+
     const [letter, setLetter] = useState("")
     const [challenge, setChallenge] = useState<Challenge | null>(null)
     const [lettersUsed, setLetterUsed] = useState<LettersUsedProps[]>([])
@@ -31,8 +31,9 @@ export function App() {
 
         setChallenge(randomWord)
 
-        setAttempts(0)
+        setScore(0)
         setLetter("")
+        setLetterUsed([])
     }
 
     function handleConfirm() {
@@ -52,14 +53,14 @@ export function App() {
         }
 
         const hits = challenge.word
-        .toUpperCase()
-        .split("")
-        .filter((char) => char === value).length
+            .toUpperCase()
+            .split("")
+            .filter((char) => char === value).length
 
         const correct = hits > 0
         const currentScore = score + hits
 
-        setLetterUsed((prevState) => [...prevState, { value, correct}])
+        setLetterUsed((prevState) => [...prevState, { value, correct }])
         setScore(currentScore)
 
         setLetter("")
@@ -77,14 +78,17 @@ export function App() {
     return (
         <div className={styles.container}>
             <main>
-                <Header current={attempts} max={10} onRestart={handleRestartGame} />
+                <Header current={score} max={10} onRestart={handleRestartGame} />
 
-                <Tip tip= {challenge.tip} />
+                <Tip tip={challenge.tip} />
 
                 <div className={styles.word}>
-                    {challenge.word.split("").map(() => (
-                        < Letter value="" />
-                    ))}
+                    {challenge.word.split("").map((letter, index) => {
+                        const letterUsed = lettersUsed.find((used) => used.value.toUpperCase() === letter.toUpperCase())    
+                        
+                        return (
+                        < Letter key={index} value={letterUsed?.value} color={letterUsed?.correct ? "correct" : "default"} />
+                    )})}
 
 
 
