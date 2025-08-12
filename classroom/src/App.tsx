@@ -17,12 +17,14 @@ export function App() {
     const [letter, setLetter] = useState("")
     const [challenge, setChallenge] = useState<Challenge | null>(null)
     const [lettersUsed, setLetterUsed] = useState<LettersUsedProps[]>([])
+    const [shake, setShake] = useState(false)
+
     const ATTEMPTS_MARGIN = 5
-    
+
 
     function handleRestartGame() {
         const isConfirmed = window.confirm("Você tem certeza que deseja reiniciar ?")
-        if(isConfirmed){
+        if (isConfirmed) {
             startGame()
         }
     }
@@ -69,9 +71,13 @@ export function App() {
         setScore(currentScore)
 
         setLetter("")
+        if (!correct) {
+            setShake(true)
+            setTimeout(() => setShake(false), 300)
+        }
     }
 
-    function endGame(message: string){
+    function endGame(message: string) {
         alert(message)
         startGame()
     }
@@ -80,20 +86,20 @@ export function App() {
         startGame()
     }, [])
 
-    useEffect(() =>{
-        if(!challenge){
+    useEffect(() => {
+        if (!challenge) {
             return
         }
-        setTimeout(()=> {
-            if(score === challenge.word.length){
+        setTimeout(() => {
+            if (score === challenge.word.length) {
                 return endGame("Parabéns, você descobriu a palavra")
             }
             const attemptLimit = challenge.word.length + ATTEMPTS_MARGIN
-            if(lettersUsed.length === attemptLimit){
+            if (lettersUsed.length === attemptLimit) {
                 return endGame("Que pena, você usou todas as tentativas")
             }
-        },200)
-    },[score, lettersUsed.length])
+        }, 200)
+    }, [score, lettersUsed.length])
 
     if (!challenge) {
         return
@@ -103,20 +109,21 @@ export function App() {
     return (
         <div className={styles.container}>
             <main>
-                <Header 
-                current={lettersUsed.length} 
-                max={challenge.word.length + ATTEMPTS_MARGIN} 
-                onRestart={handleRestartGame} />
+                <Header
+                    current={lettersUsed.length}
+                    max={challenge.word.length + ATTEMPTS_MARGIN}
+                    onRestart={handleRestartGame} />
 
                 <Tip tip={challenge.tip} />
 
-                <div className={styles.word}>
+                <div className={`${styles.word} ${shake && styles.shake}`}>
                     {challenge.word.split("").map((letter, index) => {
-                        const letterUsed = lettersUsed.find((used) => used.value.toUpperCase() === letter.toUpperCase())    
-                        
+                        const letterUsed = lettersUsed.find((used) => used.value.toUpperCase() === letter.toUpperCase())
+
                         return (
-                        < Letter key={index} value={letterUsed?.value} color={letterUsed?.correct ? "correct" : "default"} />
-                    )})}
+                            < Letter key={index} value={letterUsed?.value} color={letterUsed?.correct ? "correct" : "default"} />
+                        )
+                    })}
 
 
 
